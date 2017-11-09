@@ -3,6 +3,9 @@ var canvas = document.getElementById("meu_canvas");
 var ctx = canvas.getContext("2d");
 var x = canvas.width/2;
 var y = canvas.height/2;
+var score1 = 0;
+var score2 = 0;
+var pl;
 //Bola
 var dy = 2;
 var dx = 2;
@@ -62,7 +65,7 @@ function keyUpHandler2(e) {
         upPressed2 = false;
     }
 }
-
+//Desenhar
 function drawBall() {
     ctx.beginPath();
     ctx.arc(x, y, bolaR, 0, Math.PI*2);
@@ -87,11 +90,51 @@ function drawPaddle2() {
     ctx.closePath();
 }
 
+function drawScore1() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Pontos: "+score1, 8, 20);
+}
+
+function drawScore2() {
+    ctx.font = "16px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Pontos: "+score2, 405, 20);
+}
+
+function checkpoints(pl){
+    if(pl == 1){
+        x = canvas.width/2;
+        y = canvas.height/2;
+        dx = -dx;
+        score1++;
+        if(score2 == 3){
+        alert("Jogador 2 venceu");
+        document.location.reload();
+    }
+    }else if(pl == 2){
+        x = canvas.width/2;
+        y = canvas.height/2;
+        score2++;
+        if(score1 == 3){
+        alert("Jogador 1 venceu");
+        document.location.reload();
+    }
+    }
+
+    if(score2 == 3){
+        alert("Jogador 2 venceu");
+        document.location.reload();
+    }
+}
+
 function draw(){
 	ctx.clearRect(0,0,canvas.width,canvas.height);
 	drawBall();
 	drawPaddle1();
 	drawPaddle2();
+    drawScore1();
+    drawScore2();
 
 	if(y + dy > canvas.height-bolaR || y + dy < 0){
 		dy = -dy;
@@ -101,13 +144,13 @@ function draw(){
 		if(y > paddle1Y+3 && y < paddle1Y+paddleHeight1+3){
 			dx = -dx;
 		}else {
-			document.location.reload();
+            checkpoints(1);
 		}
 	}else if(x + dx < 0 + paddleWidth2 + bolaR){
 		if(y > paddle2Y+3 && y < paddle2Y+paddleHeight2+3){
 			dx = -dx;
 		}else{
-			document.location.reload();
+            checkpoints(2);
 		}
 	}
 
@@ -129,5 +172,3 @@ if(downPressed1 && paddle1Y < canvas.height-paddleHeight1) {
 	//console.log([x,y],[paddleX1,paddle1Y+paddleHeight1]);
 }
 setInterval(draw, 10);
-
-console.log(canvas.width-paddleWidth1);
