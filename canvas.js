@@ -106,26 +106,27 @@ function checkpoints(pl){
     if(pl == 1){
         x = canvas.width/2;
         y = canvas.height/2;
-        dx = -dx;
+        paddle2Y = (canvas.height/2)-(paddleHeight2/2);
+        paddle1Y = (canvas.height/2)-(paddleHeight1/2);
         score1++;
-        if(score2 == 3){
-        alert("Jogador 2 venceu");
-        document.location.reload();
-    }
+            
     }else if(pl == 2){
         x = canvas.width/2;
         y = canvas.height/2;
+        paddle2Y = (canvas.height/2)-(paddleHeight2/2);
+        paddle1Y = (canvas.height/2)-(paddleHeight1/2);
         score2++;
-        if(score1 == 3){
-        alert("Jogador 1 venceu");
-        document.location.reload();
+            
     }
+    if(score1 == 3){
+                alert("Jogador 1 venceu");
+                document.location.reload();
+        }
+    if(score2 == 3){
+            alert("Jogador 2 venceu");
+            document.location.reload();
     }
 
-    if(score2 == 3){
-        alert("Jogador 2 venceu");
-        document.location.reload();
-    }
 }
 
 function draw(){
