@@ -25,12 +25,13 @@ var downPressed1 = false;
 var upPressed1 = false;
 var downPressed2 = false;
 var upPressed2 = false;
+var enterPressed = false;
 
 document.addEventListener("keydown", keyDownHandler1, false);
 document.addEventListener("keyup", keyUpHandler1, false);
 document.addEventListener("keydown", keyDownHandler2, false);
 document.addEventListener("keyup", keyUpHandler2, false);
-
+document.addEventListener("keypress",enterDown, false);
 //Jogador 1 Mov
 function keyDownHandler1(e) {
     if(e.keyCode == 40) {
@@ -65,6 +66,13 @@ function keyUpHandler2(e) {
         upPressed2 = false;
     }
 }
+//Comecar jogo
+function enterDown(e){
+    if(e.keyCode == 13){
+        enterPressed = true;
+    }
+}
+
 //Desenhar
 function drawBall() {
     ctx.beginPath();
@@ -106,70 +114,95 @@ function checkpoints(pl){
     if(pl == 1){
         x = canvas.width/2;
         y = canvas.height/2;
-        paddle2Y = (canvas.height/2)-(paddleHeight2/2);
-        paddle1Y = (canvas.height/2)-(paddleHeight1/2);
+        dx = -dx;
         score1++;
-            
+            if(score2 == 3){
+            alert("Jogador 2 venceu");
+            document.location.reload();
+        }
     }else if(pl == 2){
         x = canvas.width/2;
         y = canvas.height/2;
-        paddle2Y = (canvas.height/2)-(paddleHeight2/2);
-        paddle1Y = (canvas.height/2)-(paddleHeight1/2);
         score2++;
-            
+          
     }
-    if(score1 == 3){
-                alert("Jogador 1 venceu");
-                document.location.reload();
+
+  if(score1 == 3){
+            alert("Jogador 1 venceu");
+            document.location.reload();
         }
+
     if(score2 == 3){
             alert("Jogador 2 venceu");
             document.location.reload();
-    }
+        }
 
 }
 
+function startGame() {
+    ctx.font = "34px Arial";
+    ctx.fillStyle = "black";
+    ctx.fillText("Press ENTER to start the Game", 2, canvas.height/2);
+}
+
 function draw(){
-	ctx.clearRect(0,0,canvas.width,canvas.height);
-	drawBall();
-	drawPaddle1();
-	drawPaddle2();
-    drawScore1();
-    drawScore2();
+    if(enterPressed){
+    	ctx.clearRect(0,0,canvas.width,canvas.height);
+    	drawBall();
+    	drawPaddle1();
+    	drawPaddle2();
+        drawScore1();
+        drawScore2();
 
-	if(y + dy > canvas.height-bolaR || y + dy < 0){
-		dy = -dy;
-	}
-	//Jogador 1 colisao
-	if(x + dx > canvas.width - paddleWidth1 - bolaR){
-		if(y > paddle1Y+3 && y < paddle1Y+paddleHeight1+3){
-			dx = -dx;
-		}else {
-            checkpoints(1);
-		}
-	}else if(x + dx < 0 + paddleWidth2 + bolaR){
-		if(y > paddle2Y+3 && y < paddle2Y+paddleHeight2+3){
-			dx = -dx;
-		}else{
-            checkpoints(2);
-		}
-	}
+    	if(y + dy > canvas.height-bolaR || y + dy < 0){
+    		dy = -dy;
+    	}
+    	//Jogador 1 colisao/pontuacao
+    	if(x + dx > canvas.width - paddleWidth1 - bolaR){
+    		if(y > paddle1Y+3 && y < paddle1Y+paddleHeight1+3){
+    			dx = -dx;
+                if(dx > 0){
+                    dx += 0.2;
+                }else if(dx < 0){
+                    dx -= 0.2;
+                }
+    		}else {
+                checkpoints(1);
+    		}
+    	}//Jogador 2 colisao/pontuacao
+        else if(x + dx < 0 + paddleWidth2 + bolaR){
+    		if(y > paddle2Y+3 && y < paddle2Y+paddleHeight2+3){
+    			dx = -dx;
+                if(dx > 0){
+                    dx += 0.2;
+                }else if(dx < 0){
+                    dx -= 0.2;
+                }
+    		}else{
+                checkpoints(2);
+    		}
+    	}
 
-if(downPressed1 && paddle1Y < canvas.height-paddleHeight1) {
-        paddle1Y += 5;
-    }
-    else if(upPressed1 && paddle1Y > 0) {
-        paddle1Y -= 5;
-    }
-    if(downPressed2 && paddle2Y < canvas.height-paddleHeight2) {
-        paddle2Y += 5;
-    }
-    else if(upPressed2 && paddle2Y > 0) {
-        paddle2Y -= 5;
-    }
+    if(downPressed1 && paddle2Y < canvas.height-paddleHeight2) {
+            paddle2Y += 5;
+        }
+        else if(upPressed1 && paddle2Y > 0) {
+            paddle2Y -= 5;
+        }
 
-    y += dy;
-	x += dx;
-	//console.log([x,y],[paddleX1,paddle1Y+paddleHeight1]);
+        y += dy;
+    	x += dx;
+
+     if(y >= paddle1Y+paddleHeight1 && paddle1Y < canvas.height-paddleHeight1) {
+            paddle1Y += 2;
+        }
+        else if(y <= paddle1Y+paddleHeight1 && paddle1Y > 0) {
+            paddle1Y -= 2;
+        }
+
+    	//console.log([x,y],[paddleX1,paddle1Y+paddleHeight1]);
+    }else{
+        startGame();
+    }
 }
 setInterval(draw, 10);
